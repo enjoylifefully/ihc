@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Save } from "lucide-react";
+import { Menu, Save } from "lucide-react";
+import { Sidebar } from "@/components/Sidebar";
 import { useToast } from "@/hooks/use-toast";
 
 interface JournalEntry {
@@ -14,6 +15,7 @@ interface JournalEntry {
 const Journal = () => {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [currentEntry, setCurrentEntry] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -54,10 +56,21 @@ const Journal = () => {
   };
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen">
-      <header className="bg-card border-b border-border p-4">
-        <h1 className="text-xl font-semibold text-foreground">Diário Pessoal</h1>
-      </header>
+    <div className="min-h-screen bg-background flex">
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      
+      <div className="flex-1 flex flex-col">
+        <header className="bg-card border-b border-border p-4 flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsSidebarOpen(true)}
+            className="lg:hidden"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+          <h1 className="text-xl font-semibold text-foreground">Diário Pessoal</h1>
+        </header>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
           <Card className="p-6 space-y-4">
@@ -96,6 +109,7 @@ const Journal = () => {
           )}
         </div>
       </div>
+    </div>
   );
 };
 
