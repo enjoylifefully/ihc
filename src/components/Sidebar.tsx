@@ -1,68 +1,65 @@
-import { Link, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { MessageSquare, Wind, BookOpen, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
+import { NavLink } from "@/components/NavLink";
+import { MessageSquare, Wind, BookOpen } from "lucide-react";
+import {
+  Sidebar as ShadcnSidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
-interface SidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+const links = [
+  { to: "/", icon: MessageSquare, label: "Chat" },
+  { to: "/breathe", icon: Wind, label: "Respirar" },
+  { to: "/journal", icon: BookOpen, label: "Diário" },
+];
 
-export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
+export const Sidebar = () => {
+  const { state } = useSidebar();
   const location = useLocation();
 
-  const links = [
-    { to: "/", icon: MessageSquare, label: "Chat" },
-    { to: "/breathe", icon: Wind, label: "Respirar" },
-    { to: "/journal", icon: BookOpen, label: "Diário" },
-  ];
-
   return (
-    <>
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={onClose}
-        />
-      )}
-      
-      <aside
-        className={cn(
-          "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out",
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        )}
-      >
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <h2 className="text-xl font-bold text-primary">Slypy</h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="lg:hidden"
-          >
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
-        
-        <nav className="p-4 space-y-2">
-          {links.map((link) => {
-            const Icon = link.icon;
-            const isActive = location.pathname === link.to;
-            
-            return (
-              <Link key={link.to} to={link.to} onClick={onClose}>
-                <Button
-                  variant={isActive ? "secondary" : "ghost"}
-                  className="w-full justify-start gap-3"
-                >
-                  <Icon className="h-5 w-5" />
-                  {link.label}
-                </Button>
-              </Link>
-            );
-          })}
-        </nav>
-      </aside>
-    </>
+    <ShadcnSidebar
+      className={state === "collapsed" ? "w-14" : "w-60"}
+      collapsible="icon"
+    >
+      <SidebarContent>
+        <SidebarGroup>
+          {state !== "collapsed" && (
+            <SidebarGroupLabel className="text-xl font-bold text-primary px-4 py-6">
+              Slypy
+            </SidebarGroupLabel>
+          )}
+
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {links.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <SidebarMenuItem key={link.to}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={link.to}
+                        end
+                        className="hover:bg-muted/50"
+                        activeClassName="bg-secondary text-foreground font-medium"
+                      >
+                        <Icon className="h-5 w-5" />
+                        {state !== "collapsed" && <span>{link.label}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </ShadcnSidebar>
   );
 };

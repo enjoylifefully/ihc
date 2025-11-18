@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Menu } from "lucide-react";
-import { Sidebar } from "@/components/Sidebar";
 
 const Breathe = () => {
   const [isBreathing, setIsBreathing] = useState(false);
   const [phase, setPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
   const [count, setCount] = useState(4);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!isBreathing) return;
@@ -42,21 +39,10 @@ const Breathe = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      
-      <div className="flex-1 flex flex-col">
-        <header className="bg-card border-b border-border p-4 flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsSidebarOpen(true)}
-            className="lg:hidden"
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-          <h1 className="text-xl font-semibold text-foreground">Exercício de Respiração</h1>
-        </header>
+    <div className="flex-1 flex flex-col min-h-screen">
+      <header className="bg-card border-b border-border p-4">
+        <h1 className="text-xl font-semibold text-foreground">Exercício de Respiração</h1>
+      </header>
 
         <div className="flex-1 flex items-center justify-center p-4">
           <Card className="w-full max-w-md p-8 text-center space-y-8">
@@ -104,7 +90,6 @@ const Breathe = () => {
           </Card>
         </div>
       </div>
-    </div>
   );
 };
 

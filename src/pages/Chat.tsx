@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Send, Menu } from "lucide-react";
-import { Sidebar } from "@/components/Sidebar";
+import { Send } from "lucide-react";
 
 interface Message {
   id: string;
@@ -15,7 +14,6 @@ interface Message {
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -103,29 +101,16 @@ const Chat = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      
-      <div className="flex-1 flex flex-col">
-        <header className="bg-card border-b border-border p-4 flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsSidebarOpen(true)}
-            className="lg:hidden"
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold">
-              S
-            </div>
-            <div>
-              <h1 className="font-semibold text-foreground">Slypy</h1>
-              <p className="text-sm text-muted-foreground">Seu assistente zen</p>
-            </div>
-          </div>
-        </header>
+    <div className="flex-1 flex flex-col min-h-screen">
+      <header className="bg-card border-b border-border p-4 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold">
+          S
+        </div>
+        <div>
+          <h1 className="font-semibold text-foreground">Slypy</h1>
+          <p className="text-sm text-muted-foreground">Seu assistente zen</p>
+        </div>
+      </header>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.map((message) => (
@@ -168,7 +153,6 @@ const Chat = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
