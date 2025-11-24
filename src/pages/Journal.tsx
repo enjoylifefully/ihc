@@ -2,33 +2,44 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Menu, Save } from "lucide-react";
+import { Menu, Save, Trash2 } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface JournalEntry {
-  id: string;
+  id: number;
   content: string;
-  date: Date;
+  created_at: string;
 }
 
 const Journal = () => {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [currentEntry, setCurrentEntry] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   useEffect(() => {
-    const savedEntries = localStorage.getItem("journalEntries");
-    if (savedEntries) {
-      setEntries(JSON.parse(savedEntries, (key, value) => {
-        if (key === "date") return new Date(value);
-        return value;
-      }));
-    }
-  }, []);
+    if (!user) return;
 
-  const saveEntry = () => {
+    const loadEntries = async () => {
+      try {
+        const response = await fetch(`${API_URL}/get-diary/${user.userId}`);
+        const data = await response.json();
+        setEntries(data);
+      } catch (error) {
+        console.error("Erro ao carregar entradas:", error);
+      }
+    };
+
+    loadEntries();
+  }, [user]);
+
+  const saveEntry = async () => {
     if (!currentEntry.trim()) {
       toast({
         title: "Entrada vazia",
@@ -38,21 +49,65 @@ const Journal = () => {
       return;
     }
 
-    const newEntry: JournalEntry = {
-      id: Date.now().toString(),
-      content: currentEntry,
-      date: new Date(),
-    };
+    if (!user) return;
 
-    const updatedEntries = [newEntry, ...entries];
-    setEntries(updatedEntries);
-    localStorage.setItem("journalEntries", JSON.stringify(updatedEntries));
-    setCurrentEntry("");
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/save-diary`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.userId,
+          content: currentEntry,
+        }),
+      });
 
-    toast({
-      title: "Entrada salva",
-      description: "Sua reflexão foi salva com sucesso.",
-    });
+      if (!response.ok) {
+        throw new Error("Erro ao salvar entrada");
+      }
+
+      const listResponse = await fetch(`${API_URL}/get-diary/${user.userId}`);
+      const data = await listResponse.json();
+      setEntries(data);
+      setCurrentEntry("");
+
+      toast({
+        title: "Entrada salva",
+        description: "Sua reflexão foi salva com sucesso.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteEntry = async (id: number) => {
+    try {
+      const response = await fetch(`${API_URL}/delete-diary/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao excluir entrada");
+      }
+
+      setEntries(entries.filter((entry) => entry.id !== id));
+      toast({
+        title: "Entrada excluída",
+        description: "A entrada foi removida com sucesso.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -81,9 +136,9 @@ const Journal = () => {
               placeholder="Como você está se sentindo hoje? O que está em sua mente?"
               className="min-h-[200px] resize-none"
             />
-            <Button onClick={saveEntry} className="w-full gap-2">
+            <Button onClick={saveEntry} className="w-full gap-2" disabled={isLoading}>
               <Save className="h-4 w-4" />
-              Salvar Entrada
+              {isLoading ? "Salvando..." : "Salvar Entrada"}
             </Button>
           </Card>
 
@@ -92,16 +147,26 @@ const Journal = () => {
               <h2 className="text-lg font-semibold text-foreground">Entradas Anteriores</h2>
               {entries.map((entry) => (
                 <Card key={entry.id} className="p-6 space-y-2 animate-fade-in">
-                  <p className="text-sm text-muted-foreground">
-                    {entry.date.toLocaleDateString("pt-BR", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
+                  <div className="flex justify-between items-start">
+                    <p className="text-sm text-muted-foreground">
+                      {new Date(entry.created_at).toLocaleDateString("pt-BR", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteEntry(entry.id)}
+                      className="h-8 w-8"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                   <p className="text-foreground whitespace-pre-wrap">{entry.content}</p>
                 </Card>
               ))}

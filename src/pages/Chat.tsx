@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Send, Menu } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   id: string;
@@ -16,63 +18,60 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   useEffect(() => {
-    const savedMessages = localStorage.getItem("chatMessages");
-    if (savedMessages) {
-      setMessages(JSON.parse(savedMessages, (key, value) => {
-        if (key === "timestamp") return new Date(value);
-        return value;
-      }));
-    } else {
-      const welcomeMessage: Message = {
-        id: "1",
-        content: "Olá! Sou Slypy, seu assistente zen. Como posso ajudá-lo hoje?",
-        sender: "bot",
-        timestamp: new Date(),
-      };
-      setMessages([welcomeMessage]);
-    }
-  }, []);
+    if (!user) return;
+
+    const loadHistory = async () => {
+      try {
+        const response = await fetch(`${API_URL}/get-history/${user.userId}/general`);
+        const history = await response.json();
+        
+        if (history.length > 0) {
+          const formattedMessages = history.flatMap((h: any) => [
+            {
+              id: `${h.id}-user`,
+              content: h.message,
+              sender: "user" as const,
+              timestamp: new Date(h.timestamp),
+            },
+            {
+              id: `${h.id}-bot`,
+              content: h.response,
+              sender: "bot" as const,
+              timestamp: new Date(h.timestamp),
+            },
+          ]);
+          setMessages(formattedMessages);
+        } else {
+          const welcomeMessage: Message = {
+            id: "1",
+            content: "Olá! Sou Slypy, seu assistente zen. Como posso ajudá-lo hoje?",
+            sender: "bot",
+            timestamp: new Date(),
+          };
+          setMessages([welcomeMessage]);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar histórico:", error);
+      }
+    };
+
+    loadHistory();
+  }, [user]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem("chatMessages", JSON.stringify(messages));
-    }
-  }, [messages]);
-
-  const getBotResponse = (userMessage: string): string => {
-    const lowerMessage = userMessage.toLowerCase();
-    
-    if (lowerMessage.includes("olá") || lowerMessage.includes("oi") || lowerMessage.includes("hey")) {
-      return "Olá! É um prazer conversar com você. Como você está se sentindo hoje?";
-    }
-    if (lowerMessage.includes("ansioso") || lowerMessage.includes("ansiedade")) {
-      return "Entendo que você está se sentindo ansioso. Que tal fazer um exercício de respiração? Acesse a opção 'Respirar' no menu.";
-    }
-    if (lowerMessage.includes("triste") || lowerMessage.includes("tristeza")) {
-      return "Sinto muito que você esteja se sentindo assim. Lembre-se de que sentimentos são passageiros. Quer falar mais sobre isso?";
-    }
-    if (lowerMessage.includes("feliz") || lowerMessage.includes("bem")) {
-      return "Que maravilhoso ouvir isso! Momentos de alegria merecem ser celebrados. O que está trazendo essa felicidade?";
-    }
-    if (lowerMessage.includes("ajuda") || lowerMessage.includes("socorro")) {
-      return "Estou aqui para você. Posso oferecer exercícios de respiração, conversas reflexivas ou um espaço para escrever no diário. O que você precisa agora?";
-    }
-    if (lowerMessage.includes("obrigado") || lowerMessage.includes("obrigada")) {
-      return "Por nada! É um prazer poder ajudá-lo. Sempre que precisar, estarei aqui.";
-    }
-    
-    return "Compreendo. Conte-me mais sobre isso. Estou aqui para ouvir e ajudar no que for possível.";
-  };
-
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const handleSend = async () => {
+    if (!input.trim() || !user || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -82,17 +81,56 @@ const Chat = () => {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const messageText = input;
     setInput("");
+    setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const response = await fetch(`${API_URL}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.userId,
+          message: messageText,
+          chatType: "general",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Erro ao enviar mensagem");
+      }
+
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: getBotResponse(input),
+        content: data.reply,
         sender: "bot",
         timestamp: new Date(),
       };
+
       setMessages((prev) => [...prev, botMessage]);
-    }, 1000);
+
+      // Salvar no histórico
+      await fetch(`${API_URL}/save-message`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.userId,
+          message: messageText,
+          response: data.reply,
+          chatType: "general",
+        }),
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -162,7 +200,7 @@ const Chat = () => {
               placeholder="Digite sua mensagem..."
               className="flex-1"
             />
-            <Button onClick={handleSend} size="icon">
+            <Button onClick={handleSend} size="icon" disabled={isLoading}>
               <Send className="h-4 w-4" />
             </Button>
           </div>

@@ -1,7 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Wind, BookOpen, X } from "lucide-react";
+import { MessageSquare, Wind, BookOpen, X, LogOut, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -10,9 +11,18 @@ interface SidebarProps {
 
 export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const location = useLocation();
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+    onClose();
+  };
 
   const links = [
-    { to: "/", icon: MessageSquare, label: "Chat" },
+    { to: "/", icon: Home, label: "Início" },
+    { to: "/chat", icon: MessageSquare, label: "Chat" },
     { to: "/breathe", icon: Wind, label: "Respirar" },
     { to: "/journal", icon: BookOpen, label: "Diário" },
   ];
@@ -28,7 +38,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
       
       <aside
         className={cn(
-          "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out",
+          "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out flex flex-col",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
@@ -44,7 +54,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           </Button>
         </div>
         
-        <nav className="p-4 space-y-2">
+        <nav className="flex-1 p-4 space-y-2">
           {links.map((link) => {
             const Icon = link.icon;
             const isActive = location.pathname === link.to;
@@ -62,6 +72,20 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             );
           })}
         </nav>
+
+        <div className="p-4 border-t border-border">
+          <div className="mb-4 text-sm text-muted-foreground">
+            <p className="font-medium text-foreground">{user?.username}</p>
+          </div>
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-5 w-5" />
+            Sair
+          </Button>
+        </div>
       </aside>
     </>
   );
