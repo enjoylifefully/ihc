@@ -114,8 +114,8 @@ const Journal = () => {
     <div className="min-h-screen bg-background flex">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       
-      <div className="flex-1 flex flex-col">
-        <header className="bg-card border-b border-border p-4 flex items-center gap-4">
+      <div className="flex-1 flex flex-col h-screen">
+        <header className="bg-card border-b border-border p-4 flex items-center gap-4 sticky top-0 z-10">
           <Button
             variant="ghost"
             size="icon"
