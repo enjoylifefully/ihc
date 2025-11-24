@@ -145,6 +145,16 @@ const Chat = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+        }
+      `}</style>
+
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col h-screen">
@@ -170,11 +180,13 @@ const Chat = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"} animate-fade-in`}
+              className={`flex ${
+                message.sender === "user" ? "justify-end" : "justify-start"
+              } animate-fade-in`}
             >
               <Card
                 className={`max-w-[80%] p-4 ${
@@ -203,7 +215,7 @@ const Chat = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Digite sua mensagem..."
-              className="flex-1"
+              className="flex-1 focus:border-purple-800"
             />
             <Button onClick={handleSend} size="icon" disabled={isLoading}>
               <Send className="h-4 w-4" />

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Menu, Save, Trash2 } from "lucide-react";
+import { Menu, Save, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,6 +18,10 @@ const Journal = () => {
   const [currentEntry, setCurrentEntry] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Estado apenas para controle de expansão
+  const [expandedEntryId, setExpandedEntryId] = useState<number | null>(null);
+
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -25,19 +29,18 @@ const Journal = () => {
 
   useEffect(() => {
     if (!user) return;
-
-    const loadEntries = async () => {
-      try {
-        const response = await fetch(`${API_URL}/get-diary/${user.userId}`);
-        const data = await response.json();
-        setEntries(data);
-      } catch (error) {
-        console.error("Erro ao carregar entradas:", error);
-      }
-    };
-
     loadEntries();
   }, [user]);
+
+  const loadEntries = async () => {
+    try {
+      const response = await fetch(`${API_URL}/get-diary/${user?.userId}`);
+      const data = await response.json();
+      setEntries(data);
+    } catch (error) {
+      console.error("Erro ao carregar entradas:", error);
+    }
+  };
 
   const saveEntry = async () => {
     if (!currentEntry.trim()) {
@@ -48,7 +51,6 @@ const Journal = () => {
       });
       return;
     }
-
     if (!user) return;
 
     setIsLoading(true);
@@ -56,21 +58,13 @@ const Journal = () => {
       const response = await fetch(`${API_URL}/save-diary`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.userId,
-          content: currentEntry,
-        }),
+        body: JSON.stringify({ userId: user.userId, content: currentEntry }),
       });
 
-      if (!response.ok) {
-        throw new Error("Erro ao salvar entrada");
-      }
+      if (!response.ok) throw new Error("Erro ao salvar entrada");
 
-      const listResponse = await fetch(`${API_URL}/get-diary/${user.userId}`);
-      const data = await listResponse.json();
-      setEntries(data);
+      await loadEntries();
       setCurrentEntry("");
-
       toast({
         title: "Entrada salva",
         description: "Sua reflexão foi salva com sucesso.",
@@ -91,15 +85,12 @@ const Journal = () => {
       const response = await fetch(`${API_URL}/delete-diary/${id}`, {
         method: "DELETE",
       });
-
-      if (!response.ok) {
-        throw new Error("Erro ao excluir entrada");
-      }
+      if (!response.ok) throw new Error("Erro ao excluir entrada");
 
       setEntries(entries.filter((entry) => entry.id !== id));
       toast({
         title: "Entrada excluída",
-        description: "A entrada foi removida com sucesso.",
+        description: "Removida com sucesso.",
       });
     } catch (error: any) {
       toast({
@@ -110,10 +101,21 @@ const Journal = () => {
     }
   };
 
+  // Helpers para UI
+  const getTitle = (content: string) => content.split("\n")[0];
+
+  const toggleExpand = (id: number) => {
+    if (expandedEntryId === id) {
+      setExpandedEntryId(null);
+    } else {
+      setExpandedEntryId(id);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      
+
       <div className="flex-1 flex flex-col h-screen">
         <header className="bg-card border-b border-border p-4 flex items-center gap-4 sticky top-0 z-10">
           <Button
@@ -124,52 +126,102 @@ const Journal = () => {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <h1 className="text-xl font-semibold text-foreground">Diário Pessoal</h1>
+          <h1 className="text-xl font-semibold text-foreground">
+            Diário Pessoal
+          </h1>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+        {/* ALTERAÇÃO AQUI: Classes adicionadas para esconder a scrollbar */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          {/* Card de Nova Entrada */}
           <Card className="p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-foreground">Nova Entrada</h2>
+            <h2 className="text-lg font-semibold text-foreground">
+              Nova Entrada
+            </h2>
             <Textarea
               value={currentEntry}
               onChange={(e) => setCurrentEntry(e.target.value)}
-              placeholder="Como você está se sentindo hoje? O que está em sua mente?"
-              className="min-h-[200px] resize-none"
+              placeholder="A primeira linha será o título..."
+              className="min-h-[150px] resize-none focus:border-purple-800"
             />
-            <Button onClick={saveEntry} className="w-full gap-2" disabled={isLoading}>
+            <Button
+              onClick={saveEntry}
+              className="w-full gap-2"
+              disabled={isLoading}
+            >
               <Save className="h-4 w-4" />
               {isLoading ? "Salvando..." : "Salvar Entrada"}
             </Button>
           </Card>
 
+          {/* Lista de Entradas */}
           {entries.length > 0 && (
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-foreground">Entradas Anteriores</h2>
-              {entries.map((entry) => (
-                <Card key={entry.id} className="p-6 space-y-2 animate-fade-in">
-                  <div className="flex justify-between items-start">
-                    <p className="text-sm text-muted-foreground">
-                      {new Date(entry.created_at).toLocaleDateString("pt-BR", {
-                        weekday: "long",
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => deleteEntry(entry.id)}
-                      className="h-8 w-8"
+              <h2 className="text-lg font-semibold text-foreground">
+                Entradas Anteriores
+              </h2>
+              {entries.map((entry) => {
+                const isExpanded = expandedEntryId === entry.id;
+
+                return (
+                  <Card
+                    key={entry.id}
+                    className="p-4 animate-fade-in transition-all duration-200"
+                  >
+                    {/* Header do Card (Sempre visível - Título) */}
+                    <div
+                      className="flex justify-between items-center cursor-pointer hover:opacity-80"
+                      onClick={() => toggleExpand(entry.id)}
                     >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <p className="text-foreground whitespace-pre-wrap">{entry.content}</p>
-                </Card>
-              ))}
+                      <div className="flex flex-col">
+                        <h3 className="text-lg font-bold text-foreground">
+                          {getTitle(entry.content)}
+                        </h3>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(entry.created_at).toLocaleDateString(
+                            "pt-BR",
+                            {
+                              day: "2-digit",
+                              month: "long",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        {!isExpanded && (
+                          <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                        )}
+                        {isExpanded && (
+                          <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Conteúdo Expandido */}
+                    {isExpanded && (
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <p className="text-foreground whitespace-pre-wrap text-sm leading-relaxed">
+                          {entry.content}
+                        </p>
+                        <div className="flex justify-end gap-2 mt-4">
+                          <Button
+                            className="hover:bg-red-500 hover:text-white"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteEntry(entry.id);
+                            }}
+                          >
+                            <Trash2 className="h-6 w-6" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>

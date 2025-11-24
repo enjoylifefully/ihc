@@ -38,7 +38,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
       <aside
         className={cn(
-          "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border transform transition-transform duration-200 ease-in-out flex flex-col",
+          "fixed lg:static inset-y-0 left-0 z-50 w-60 bg-sidebar border-r border-sidebar-border transform transition-transform duration-200 ease-in-out flex flex-col",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
@@ -93,10 +93,8 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         </nav>
 
         <div className="p-4 border-t border-sidebar-border">
-          <div className="mb-4 text-sm text-muted-foreground">
-            <p className="font-medium text-sidebar-foreground">
-              {user?.username}
-            </p>
+          <div className="mb-4 text-xl text-purple-700">
+            <p className="font-bold">Olá, {user?.username}!</p>
           </div>
           <Button
             variant="ghost"
