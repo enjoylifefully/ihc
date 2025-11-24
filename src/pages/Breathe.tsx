@@ -10,20 +10,15 @@ const Breathe = () => {
   const [count, setCount] = useState(4);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Gera partículas (Bolas)
   const particles = useMemo(() => {
-    // AUMENTADO: De 15 para 40 bolas para preencher mais
     return Array.from({ length: 40 }).map((_, i) => ({
       id: i,
       top: Math.random() * 100,
       left: Math.random() * 100,
-      // Variedade de tamanho: de 20px (pequenas) a 120px (grandes)
       size: Math.random() * 100 + 20,
-      // Opacidade menor para não poluir demais já que temos menos blur
       opacity: Math.random() * 0.25 + 0.05,
       floatDuration: Math.random() * 10 + 10 + "s",
       floatDelay: Math.random() * -20 + "s",
-      // AUMENTADO: Define se a bola é mais nítida ou levemente focada
       blurLevel: Math.random() > 0.5 ? "blur-sm" : "blur-md",
     }));
   }, []);
@@ -91,7 +86,6 @@ const Breathe = () => {
       </style>
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-      {/* --- BACKGROUND PARTICLES CONTAINER --- */}
       <div
         className="absolute inset-[-20%] pointer-events-none z-0 transition-transform ease-in-out"
         style={{
@@ -104,7 +98,6 @@ const Breathe = () => {
         {particles.map((particle) => (
           <div
             key={particle.id}
-            // AQUI: Usamos a propriedade blurLevel (blur-sm ou blur-md) em vez de blur-xl
             className={`absolute rounded-full bg-primary ${particle.blurLevel}`}
             style={{
               top: `${particle.top}%`,

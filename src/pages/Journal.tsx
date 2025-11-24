@@ -19,7 +19,6 @@ const Journal = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Estado apenas para controle de expansão
   const [expandedEntryId, setExpandedEntryId] = useState<number | null>(null);
 
   const { toast } = useToast();
@@ -131,7 +130,6 @@ const Journal = () => {
           </h1>
         </header>
 
-        {/* ALTERAÇÃO AQUI: Classes adicionadas para esconder a scrollbar */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {/* Card de Nova Entrada */}
           <Card className="p-6 space-y-4">
