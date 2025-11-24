@@ -15,7 +15,7 @@ O backend gerencia a comunicação com a inteligência artificial.
 
 1.  **Clone o repositório:**
     ```bash
-    git clone [https://github.com/enjoylifefully/chatbot-ihc](https://github.com/enjoylifefully/chatbot-ihc)
+    git clone https://github.com/enjoylifefully/chatbot-ihc
     ```
 
 2.  **Acesse a pasta e instale as dependências:**
@@ -53,7 +53,7 @@ Abra um **novo terminal** para rodar a interface visual.
 1.  **Clone o repositório:**
     * Volte para a pasta raiz onde você guarda seus projetos antes de rodar o comando abaixo.
     ```bash
-    git clone [https://github.com/enjoylifefully/ihc](https://github.com/enjoylifefully/ihc)
+    git clone https://github.com/enjoylifefully/ihc
     ```
 
 2.  **Acesse a pasta e instale as dependências:**
