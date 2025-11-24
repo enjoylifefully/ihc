@@ -144,8 +144,8 @@ const Chat = () => {
     <div className="min-h-screen bg-background flex">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       
-      <div className="flex-1 flex flex-col">
-        <header className="bg-card border-b border-border p-4 flex items-center gap-4">
+      <div className="flex-1 flex flex-col h-screen">
+        <header className="bg-card border-b border-border p-4 flex items-center gap-4 sticky top-0 z-10">
           <Button
             variant="ghost"
             size="icon"
@@ -191,7 +191,7 @@ const Chat = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="border-t border-border p-4 bg-card">
+        <div className="border-t border-border p-4 bg-card sticky bottom-0 z-10">
           <div className="flex gap-2">
             <Input
               value={input}

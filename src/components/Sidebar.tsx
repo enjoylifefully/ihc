@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Wind, BookOpen, X, LogOut, Home } from "lucide-react";
+import { MessageSquare, Wind, BookOpen, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -21,7 +21,6 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   };
 
   const links = [
-    { to: "/", icon: Home, label: "Início" },
     { to: "/chat", icon: MessageSquare, label: "Chat" },
     { to: "/breathe", icon: Wind, label: "Respirar" },
     { to: "/journal", icon: BookOpen, label: "Diário" },
