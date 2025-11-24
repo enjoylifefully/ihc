@@ -44,7 +44,7 @@ const Breathe = () => {
   return (
     <div className="min-h-screen bg-background flex">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      
+
       <div className="flex-1 flex flex-col">
         <header className="bg-card border-b border-border p-4 flex items-center gap-4">
           <Button
@@ -55,7 +55,9 @@ const Breathe = () => {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <h1 className="text-xl font-semibold text-foreground">Exercício de Respiração</h1>
+          <h1 className="text-xl font-semibold text-foreground">
+            Exercício de Respiração
+          </h1>
         </header>
 
         <div className="flex-1 flex items-center justify-center p-4">
@@ -76,13 +78,15 @@ const Breathe = () => {
                     ? phase === "inhale"
                       ? "scale-125"
                       : phase === "exhale"
-                      ? "scale-75"
-                      : "scale-100"
+                        ? "scale-75"
+                        : "scale-100"
                     : "scale-100"
                 }`}
               >
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-primary mb-2">{count}</p>
+                  <p className="text-3xl font-bold text-primary mb-2">
+                    {count}
+                  </p>
                   {isBreathing && (
                     <p className="text-lg text-foreground">{getPhaseText()}</p>
                   )}
@@ -93,7 +97,7 @@ const Breathe = () => {
             <Button
               onClick={() => setIsBreathing(!isBreathing)}
               size="lg"
-              className="w-full"
+              className="w-full hover:bg-purple-600"
             >
               {isBreathing ? "Pausar" : "Começar"}
             </Button>

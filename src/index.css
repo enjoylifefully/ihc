@@ -2,106 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
-  :root {
-    /* Areia Suave - Fundo principal */
-    --background: 44 33% 94%;
-    --foreground: 14 26% 29%;
+    :root {
+        --background: 270 33% 88%;
+        --foreground: 270 50% 10%;
 
-    /* Balão do Bot - Quase branco creme */
-    --card: 60 17% 98%;
-    --card-foreground: 14 26% 29%;
+        --card: 270 50% 88%;
+        --card-foreground: 270 50% 10%;
 
-    --popover: 60 17% 98%;
-    --popover-foreground: 14 26% 29%;
+        --popover: 270 50% 98%;
+        --popover-foreground: 270 50% 10%;
 
-    /* Roxo Slypy - Cor principal */
-    --primary: 291 64% 42%;
-    --primary-foreground: 44 100% 98%;
+        --primary: 270 70% 50%;
+        --primary-foreground: 0 0% 100%;
 
-    /* Roxo Suave - Secondary */
-    --secondary: 291 50% 90%;
-    --secondary-foreground: 14 26% 29%;
+        --secondary: 270 30% 90%;
+        --secondary-foreground: 270 50% 10%;
 
-    --muted: 34 20% 88%;
-    --muted-foreground: 14 10% 55%;
+        --muted: 270 20% 90%;
+        --muted-foreground: 270 10% 45%;
 
-    /* Roxo mais claro para acentos */
-    --accent: 291 50% 85%;
-    --accent-foreground: 14 26% 29%;
+        --accent: 270 40% 85%;
+        --accent-foreground: 270 50% 10%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 44 100% 98%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 100%;
 
-    --border: 34 20% 85%;
-    --input: 34 20% 85%;
-    --ring: 291 64% 42%;
+        --border: 270 20% 50%;
+        --input: 270 20% 0%;
+        --ring: 270 70% 50%;
 
-    --radius: 0.5rem;
+        --radius: 0.5rem;
 
-    /* Café com Leite - Sidebar */
-    --sidebar-background: 34 25% 87%;
-    --sidebar-foreground: 14 26% 29%;
-    --sidebar-primary: 291 64% 42%;
-    --sidebar-primary-foreground: 44 100% 98%;
-    --sidebar-accent: 34 25% 80%;
-    --sidebar-accent-foreground: 14 26% 29%;
-    --sidebar-border: 34 20% 80%;
-    --sidebar-ring: 291 64% 42%;
-  }
+        --sidebar-background: 270 25% 85%;
 
-  .dark {
-    /* Marrom escuro para fundo no dark mode */
-    --background: 14 20% 18%;
-    --foreground: 44 33% 94%;
+        --sidebar-foreground: 270 40% 20%;
 
-    --card: 14 18% 22%;
-    --card-foreground: 44 33% 94%;
+        --sidebar-primary: 270 70% 40%;
 
-    --popover: 14 18% 22%;
-    --popover-foreground: 44 33% 94%;
+        --sidebar-primary-foreground: 0 0% 98%;
 
-    /* Roxo mais claro no dark mode */
-    --primary: 291 60% 65%;
-    --primary-foreground: 14 20% 18%;
+        --sidebar-accent: 270 30% 85%;
 
-    --secondary: 14 15% 28%;
-    --secondary-foreground: 44 33% 94%;
+        --sidebar-accent-foreground: 270 70% 15%;
 
-    --muted: 14 15% 28%;
-    --muted-foreground: 14 10% 65%;
+        --sidebar-border: 270 20% 60%;
 
-    --accent: 291 50% 75%;
-    --accent-foreground: 14 20% 18%;
-
-    --destructive: 0 62.8% 50%;
-    --destructive-foreground: 44 33% 94%;
-
-    --border: 14 15% 32%;
-    --input: 14 15% 32%;
-    --ring: 291 60% 65%;
-
-    --sidebar-background: 14 22% 15%;
-    --sidebar-foreground: 44 25% 85%;
-    --sidebar-primary: 291 60% 65%;
-    --sidebar-primary-foreground: 14 20% 18%;
-    --sidebar-accent: 14 18% 22%;
-    --sidebar-accent-foreground: 44 25% 85%;
-    --sidebar-border: 14 15% 25%;
-    --sidebar-ring: 291 60% 65%;
-  }
+        --sidebar-ring: 270 70% 50%;
+    }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+    * {
+        @apply border-border;
+    }
 
-  body {
-    @apply bg-background text-foreground;
-  }
+    body {
+        @apply bg-background text-foreground;
+    }
 }

@@ -30,9 +30,11 @@ const Chat = () => {
 
     const loadHistory = async () => {
       try {
-        const response = await fetch(`${API_URL}/get-history/${user.userId}/general`);
+        const response = await fetch(
+          `${API_URL}/get-history/${user.userId}/general`,
+        );
         const history = await response.json();
-        
+
         if (history.length > 0) {
           const formattedMessages = history.flatMap((h: any) => [
             {
@@ -52,7 +54,8 @@ const Chat = () => {
         } else {
           const welcomeMessage: Message = {
             id: "1",
-            content: "Olá! Sou Slypy, seu assistente zen. Como posso ajudá-lo hoje?",
+            content:
+              "Olá! Sou Slypy, seu assistente zen. Como posso ajudá-lo hoje?",
             sender: "bot",
             timestamp: new Date(),
           };
@@ -143,7 +146,7 @@ const Chat = () => {
   return (
     <div className="min-h-screen bg-background flex">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      
+
       <div className="flex-1 flex flex-col h-screen">
         <header className="bg-card border-b border-border p-4 flex items-center gap-4 sticky top-0 z-10">
           <Button
@@ -160,7 +163,9 @@ const Chat = () => {
             </div>
             <div>
               <h1 className="font-semibold text-foreground">Slypy</h1>
-              <p className="text-sm text-muted-foreground">Seu assistente zen</p>
+              <p className="text-sm text-muted-foreground">
+                Seu assistente zen
+              </p>
             </div>
           </div>
         </header>
