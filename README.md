@@ -1,73 +1,80 @@
-# Welcome to your Lovable project
+# 🤖 Projeto IHC - Chatbot com Integração Gemini
 
-## Project info
+Este documento contém o passo a passo para configurar e rodar os repositórios do projeto de Interação Humano-Computador (Front-end e Back-end).
 
-**URL**: https://lovable.dev/projects/b47dff1e-831a-4ee8-bab7-10648580d7bf
+## 📋 Pré-requisitos
 
-## How can I edit this code?
+* **Node.js** e **npm** instalados.
+* **Git** instalado.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🚀 Passo 1: Configuração do Backend (API)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b47dff1e-831a-4ee8-bab7-10648580d7bf) and start prompting.
+O backend gerencia a comunicação com a inteligência artificial.
 
-Changes made via Lovable will be committed automatically to this repo.
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/enjoylifefully/chatbot-ihc](https://github.com/enjoylifefully/chatbot-ihc)
+    ```
 
-**Use your preferred IDE**
+2.  **Acesse a pasta e instale as dependências:**
+    ```bash
+    cd chatbot-ihc
+    npm install
+    ```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+3.  **Configure a API Key do Google Gemini:**
+    * Acesse o [Google AI Studio](https://aistudio.google.com/app/api-keys?hl=pt-br).
+    * Clique em **Create API key**.
+    * Copie a chave gerada.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+4.  **Crie as variáveis de ambiente:**
+    * Dentro da pasta `backend`, crie um arquivo chamado `.env`.
+    * Cole o conteúdo abaixo, substituindo `(sua key gerada)` pela chave que você copiou:
 
-Follow these steps:
+    ```env
+    PORT=3000
+    GEMINI_API_KEY=(sua key gerada)
+    ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+5.  **Inicie o servidor:**
+    ```bash
+    npm start
+    ```
+    > Mantenha este terminal aberto.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 💻 Passo 2: Configuração do Frontend (Interface)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+Abra um **novo terminal** para rodar a interface visual.
 
-**Edit a file directly in GitHub**
+1.  **Clone o repositório:**
+    * Volte para a pasta raiz onde você guarda seus projetos antes de rodar o comando abaixo.
+    ```bash
+    git clone [https://github.com/enjoylifefully/ihc](https://github.com/enjoylifefully/ihc)
+    ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+2.  **Acesse a pasta e instale as dependências:**
+    ```bash
+    cd ihc
+    npm install
+    ```
 
-**Use GitHub Codespaces**
+3.  **Rode o projeto:**
+    ```bash
+    npm run dev
+    ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+4.  **Acesse no navegador:**
+    * O terminal exibirá um link (geralmente `http://localhost:5173` ou similar). Clique nele para usar o sistema.
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 🛠 Resumo de Comandos
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/b47dff1e-831a-4ee8-bab7-10648580d7bf) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+| Ação | Backend (`chatbot-ihc`) | Frontend (`ihc`) |
+| :--- | :--- | :--- |
+| **Instalar** | `npm install` | `npm install` |
+| **Rodar** | `npm start` | `npm run dev` |
