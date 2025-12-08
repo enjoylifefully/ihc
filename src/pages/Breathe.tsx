@@ -6,7 +6,9 @@ import { Sidebar } from "@/components/Sidebar";
 
 const Breathe = () => {
   const [isBreathing, setIsBreathing] = useState(false);
-  const [phase, setPhase] = useState<"inhale" | "hold" | "exhale" | "empty">("inhale");
+  const [phase, setPhase] = useState<"inhale" | "hold" | "exhale" | "empty">(
+    "inhale",
+  );
   const [count, setCount] = useState(4);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -72,7 +74,9 @@ const Breathe = () => {
 
   const getContainerTransform = () => {
     if (!isBreathing) return "translateY(0)";
-    return phase === "exhale" || phase === "empty" ? "translateY(0)" : "translateY(-20%)";
+    return phase === "exhale" || phase === "empty"
+      ? "translateY(0)"
+      : "translateY(-20%)";
   };
 
   const shouldAnimateParticles = () => {
@@ -112,8 +116,8 @@ const Breathe = () => {
               width: `${particle.size}px`,
               height: `${particle.size}px`,
               opacity: particle.opacity,
-              animation: shouldAnimateParticles() 
-                ? `float-slow ${particle.floatDuration} ease-in-out infinite` 
+              animation: shouldAnimateParticles()
+                ? `float-slow ${particle.floatDuration} ease-in-out infinite`
                 : "none",
               animationDelay: particle.floatDelay,
             }}
@@ -180,8 +184,9 @@ const Breathe = () => {
             </div>
 
             {!isBreathing && (
-              <p className="text-sm text-muted-foreground text-center z-20 relative">
-                Respiração quadrática: 4 tempos de 4 segundos
+              <p className="text-xl font-bold text-purple-700 text-center z-20 relative">
+                Respiração quadrática: 4 tempos de 4 segundos (Inspire,
+                Segure,Expire e Pulmões vazios)
               </p>
             )}
 
