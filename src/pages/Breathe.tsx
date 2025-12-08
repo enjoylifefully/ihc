@@ -179,6 +179,12 @@ const Breathe = () => {
               </div>
             </div>
 
+            {!isBreathing && (
+              <p className="text-sm text-muted-foreground text-center z-20 relative">
+                Respiração quadrática: 4 tempos de 4 segundos
+              </p>
+            )}
+
             <div className="flex justify-center z-20 relative">
               <Button
                 onClick={isBreathing ? stopBreathing : startBreathing}
