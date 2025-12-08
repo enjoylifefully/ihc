@@ -9,12 +9,14 @@ import { useAuth } from "@/contexts/AuthContext";
 
 interface JournalEntry {
   id: number;
+  title?: string;
   content: string;
   created_at: string;
 }
 
 const Journal = () => {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [currentTitle, setCurrentTitle] = useState("");
   const [currentEntry, setCurrentEntry] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,10 +44,10 @@ const Journal = () => {
   };
 
   const saveEntry = async () => {
-    if (!currentEntry.trim()) {
+    if (!currentTitle.trim() || !currentEntry.trim()) {
       toast({
-        title: "Entrada vazia",
-        description: "Escreva algo antes de salvar.",
+        title: "Campos obrigatórios",
+        description: "Preencha o título e o conteúdo.",
         variant: "destructive",
       });
       return;
@@ -54,15 +56,17 @@ const Journal = () => {
 
     setIsLoading(true);
     try {
+      const fullContent = `${currentTitle}\n${currentEntry}`;
       const response = await fetch(`${API_URL}/save-diary`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.userId, content: currentEntry }),
+        body: JSON.stringify({ userId: user.userId, content: fullContent }),
       });
 
       if (!response.ok) throw new Error("Erro ao salvar entrada");
 
       await loadEntries();
+      setCurrentTitle("");
       setCurrentEntry("");
       toast({
         title: "Entrada salva",
@@ -136,10 +140,17 @@ const Journal = () => {
             <h2 className="text-lg font-semibold text-foreground">
               Nova Entrada
             </h2>
+            <input
+              type="text"
+              value={currentTitle}
+              onChange={(e) => setCurrentTitle(e.target.value)}
+              placeholder="Título da entrada"
+              className="w-full px-3 py-2 rounded-md border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            />
             <Textarea
               value={currentEntry}
               onChange={(e) => setCurrentEntry(e.target.value)}
-              placeholder="A primeira linha será o título..."
+              placeholder="Escreva seus pensamentos..."
               className="min-h-[150px] resize-none focus:border-purple-800"
             />
             <Button

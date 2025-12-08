@@ -66,8 +66,12 @@ const Login = () => {
           <div className="w-20 h-20 mx-auto rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-3xl">
             <Flower className="w-10 h-10" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Slypy</h1>
-          <p className="text-muted-foreground">Seu assistente zen</p>
+          <h1 className="text-2xl font-bold text-foreground">
+            {isRegistering ? "Bem vindo ao Slypy" : "Slypy"}
+          </h1>
+          <p className="text-muted-foreground">
+            {isRegistering ? "Crie uma nova conta" : "Seu assistente zen"}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -113,7 +117,7 @@ const Login = () => {
             className="text-sm text-primary hover:underline"
             disabled={isLoading}
           >
-            {isRegistering ? "Já tem conta? Entrar" : "Não tem conta? Criar"}
+            {isRegistering ? "Já tem uma conta?" : "Não tem conta? Criar"}
           </button>
         </div>
       </Card>

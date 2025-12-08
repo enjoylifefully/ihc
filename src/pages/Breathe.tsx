@@ -6,7 +6,7 @@ import { Sidebar } from "@/components/Sidebar";
 
 const Breathe = () => {
   const [isBreathing, setIsBreathing] = useState(false);
-  const [phase, setPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
+  const [phase, setPhase] = useState<"inhale" | "hold" | "exhale" | "empty">("inhale");
   const [count, setCount] = useState(4);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -33,6 +33,7 @@ const Breathe = () => {
             setPhase((currentPhase) => {
               if (currentPhase === "inhale") return "hold";
               if (currentPhase === "hold") return "exhale";
+              if (currentPhase === "exhale") return "empty";
               return "inhale";
             });
             return 4;
@@ -64,12 +65,18 @@ const Breathe = () => {
         return "Segure...";
       case "exhale":
         return "Expire...";
+      case "empty":
+        return "Pulmão vazio...";
     }
   };
 
   const getContainerTransform = () => {
     if (!isBreathing) return "translateY(0)";
-    return phase === "exhale" ? "translateY(0)" : "translateY(-20%)";
+    return phase === "exhale" || phase === "empty" ? "translateY(0)" : "translateY(-20%)";
+  };
+
+  const shouldAnimateParticles = () => {
+    return isBreathing && phase !== "hold" && phase !== "empty";
   };
 
   return (
@@ -105,7 +112,9 @@ const Breathe = () => {
               width: `${particle.size}px`,
               height: `${particle.size}px`,
               opacity: particle.opacity,
-              animation: `float-slow ${particle.floatDuration} ease-in-out infinite`,
+              animation: shouldAnimateParticles() 
+                ? `float-slow ${particle.floatDuration} ease-in-out infinite` 
+                : "none",
               animationDelay: particle.floatDelay,
             }}
           />
@@ -137,7 +146,9 @@ const Breathe = () => {
                     isBreathing
                       ? phase === "inhale" || phase === "hold"
                         ? "scale-125"
-                        : "scale-90"
+                        : phase === "exhale" || phase === "empty"
+                          ? "scale-90"
+                          : "scale-100"
                       : "scale-100"
                   }
                 `}
