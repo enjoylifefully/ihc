@@ -186,7 +186,9 @@ const Breathe = () => {
             {!isBreathing && (
               <div className="text-sm font-medium text-primary/70 text-center z-20 relative space-y-1">
                 <p>Respiração quadrática: 4 tempos de 4 segundos</p>
-                <p className="text-xs text-muted-foreground">(Inspire, Segure, Expire e Pulmões vazios)</p>
+                <p className="text-xs text-purple-600/2">
+                  (Inspire, Segure, Expire e Pulmões vazios)
+                </p>
               </div>
             )}
 
