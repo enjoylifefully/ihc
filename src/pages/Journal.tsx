@@ -106,6 +106,7 @@ const Journal = () => {
 
   // Helpers para UI
   const getTitle = (content: string) => content.split("\n")[0];
+  const getContent = (content: string) => content.split("\n").slice(1).join("\n");
 
   const toggleExpand = (id: number) => {
     if (expandedEntryId === id) {
@@ -212,7 +213,7 @@ const Journal = () => {
                     {isExpanded && (
                       <div className="mt-4 pt-4 border-t border-border">
                         <p className="text-foreground whitespace-pre-wrap text-sm leading-relaxed">
-                          {entry.content}
+                          {getContent(entry.content)}
                         </p>
                         <div className="flex justify-end gap-2 mt-4">
                           <Button
