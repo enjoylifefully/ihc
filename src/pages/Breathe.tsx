@@ -138,12 +138,12 @@ const Breathe = () => {
         </header>
 
         <div className="flex-1 flex items-center justify-center p-4 pb-20">
-          <Card className="w-full max-w-md p-12 text-center space-y-12 bg-purple-200/20 backdrop-blur-lg border-primary/10 shadow-2xl relative overflow-hidden">
+          <Card className="w-full max-w-sm p-8 text-center space-y-6 bg-purple-200/20 backdrop-blur-lg border-primary/10 shadow-2xl relative overflow-hidden">
             <div
               className={`absolute inset-0 bg-gradient-to-tr from-primary/0 via-primary/5 to-primary/0 transition-opacity duration-[4000ms] ${phase === "inhale" || phase === "hold" ? "opacity-100" : "opacity-0"}`}
             ></div>
 
-            <div className="relative flex items-center justify-center h-40 z-20">
+            <div className="relative flex items-center justify-center h-32 z-20">
               <div
                 className={`transition-all duration-[4000ms] ease-in-out flex items-center justify-center
                   ${
@@ -163,20 +163,20 @@ const Breathe = () => {
                   />
 
                   <Flower
-                    className={`w-32 h-32 text-primary transition-all duration-[10000ms] ${isBreathing ? "animate-[spin_12s_linear_infinite]" : ""}`}
+                    className={`w-24 h-24 text-primary transition-all duration-[10000ms] ${isBreathing ? "animate-[spin_12s_linear_infinite]" : ""}`}
                     strokeWidth={1.5}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="space-y-4 z-20 relative">
-              <h2 className="text-3xl font-bold text-primary animate-fade-in transition-all">
+            <div className="space-y-2 z-20 relative">
+              <h2 className="text-2xl font-bold text-primary animate-fade-in transition-all">
                 {getPhaseText()}
               </h2>
-              <div className="h-6">
+              <div className="h-5">
                 {isBreathing && (
-                  <p className="text-primary/80 text-lg font-medium uppercase tracking-[0.2em] animate-pulse">
+                  <p className="text-primary/80 text-base font-medium uppercase tracking-[0.2em] animate-pulse">
                     {count}
                   </p>
                 )}
@@ -184,10 +184,10 @@ const Breathe = () => {
             </div>
 
             {!isBreathing && (
-              <p className="text-xl font-bold text-purple-700 text-center z-20 relative">
-                Respiração quadrática: 4 tempos de 4 segundos (Inspire,
-                Segure,Expire e Pulmões vazios)
-              </p>
+              <div className="text-sm font-medium text-primary/70 text-center z-20 relative space-y-1">
+                <p>Respiração quadrática: 4 tempos de 4 segundos</p>
+                <p className="text-xs text-muted-foreground">(Inspire, Segure, Expire e Pulmões vazios)</p>
+              </div>
             )}
 
             <div className="flex justify-center z-20 relative">
